@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<link rel="icon" type="image/png" href="favicon.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✠Pesquisa✠</title>
+
+<style>
+body {
+    background-color: #121212;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    padding: 10px;
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+    width: 100%;
+    max-width: 450px;
+}
+
+textarea {
+    font-size: 1.1rem;
+    padding: 15px;
+    height: 250px;
+    border: 2px solid #ffffff;
+    border-radius: 5px;
+    background-color: #1e1e1e;
+    color: #ffffff;
+    resize: none;
+    text-align: center;
+    overflow-y: hidden;
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+button {
+    font-size: 1.1rem;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    background-color: #000000;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 200px;
+}
+
+button:hover {
+    background-color: #333333;
+}
+
+footer {
+    width: 100%;
+    background-color: #000000;
+    color: #ffffff;
+    display: flex;
+    padding: 10px 20px;
+    position: absolute;
+    bottom: 0;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.countdown {
+    font-size: 1.3rem;
+    padding: 10px;
+    background-color: #000000;
+    border-radius: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="search-container">
+
+<form id="ticketForm">
+<textarea id="ticketIds" required></textarea>
+<button type="submit">Pesquisa</button>
+</form>
+
+<form id="crmForm">
+<textarea id="crmTicketIds" required></textarea>
+<button type="submit">CRM</button>
+</form>
+
+</div>
+
+<footer>
+<div class="countdown" id="countdownWork"></div>
+<div class="countdown" id="countdownCustom"></div>
+</footer>
+
+<script>
+
+// Processa entrada
+function processInput(input) {
+    return input
+        .trim()
+        .split(/[\s,]+/)
+        .map(id => id.trim())
+        .filter(id => id.length === 7 && !isNaN(id));
+}
+
+// Abre chamados com leve delay (evita bloqueio)
+function searchTickets(ticketIds, urlTemplate) {
+    ticketIds.forEach((ticketId, index) => {
+        setTimeout(() => {
+            const url = urlTemplate.replace('{ticketId}', ticketId);
+            window.open(url, '_blank');
+        }, index * 300);
+    });
+}
+
+// Eventos
+document.getElementById("ticketForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const ids = processInput(document.getElementById("ticketIds").value);
+    searchTickets(ids, 'https://support.sevensuite.com.br/TicketDossier/{ticketId}/OpenBySequentialId');
+});
+
+document.getElementById("crmForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const ids = processInput(document.getElementById("crmTicketIds").value);
+    searchTickets(ids, 'https://grafana-adm.byseven.com.br/d/c0VSoEVV3/notas-adicionais-dos-chamados?var-idNota=0&var-Chamado={ticketId}');
+});
+
+// Contador até 18h
+function updateWorkCountdown() {
+    const now = new Date();
+    let target = new Date();
+    target.setHours(18, 0, 0, 0);
+
+    if (now >= target) {
+        target.setDate(target.getDate() + 1);
+    }
+
+    const diff = target - now;
+
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+
+    document.getElementById("countdownWork").textContent =
+        `Expediente: ${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+}
+
+// Contador anual (02/02 08h)
+function updateCustomCountdown() {
+    const now = new Date();
+
+    let year = now.getFullYear();
+    let target = new Date(year, 1, 2, 8, 0, 0);
+
+    if (now > target) {
+        target = new Date(year + 1, 1, 2, 8, 0, 0);
+    }
+
+    const diff = target - now;
+
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+
+    document.getElementById("countdownCustom").textContent =
+        `Meta: ${d}d ${h}h ${m}m ${s}s`;
+}
+
+// Atualização contínua
+setInterval(() => {
+    updateWorkCountdown();
+    updateCustomCountdown();
+}, 1000);
+
+updateWorkCountdown();
+updateCustomCountdown();
+
+</script>
+
+</body>
+</html>
