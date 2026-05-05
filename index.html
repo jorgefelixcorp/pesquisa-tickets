@@ -10,31 +10,46 @@
 
 <style>
 
-/* reset essencial */
+/* RESET */
 * {
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* BODY CORRIGIDO */
 body {
     background-color: #121212;
     color: #ffffff;
+    font-family: 'Inter', sans-serif;
+
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    padding: 10px;
-    overflow-x: hidden; /* remove scroll horizontal */
+
+    min-height: 100vh; /* ao invés de height fixo */
 }
 
+/* CONTEÚDO CENTRAL */
+.main {
+    flex: 1; /* empurra footer pra baixo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+/* CONTAINER */
 .search-container {
     display: flex;
     justify-content: center;
     gap: 40px;
     width: 100%;
     max-width: 1000px;
+    padding: 20px;
 }
 
 form {
@@ -67,7 +82,6 @@ button {
     background-color: #000000;
     color: #ffffff;
     cursor: pointer;
-    transition: background-color 0.3s ease;
     width: 200px;
 }
 
@@ -75,19 +89,16 @@ button:hover {
     background-color: #333333;
 }
 
-/* FOOTER CORRIGIDO */
+/* FOOTER CORRETO (SEM absolute) */
 footer {
     width: 100%;
     background-color: #000000;
     display: flex;
     justify-content: center;
-    align-items: center;
     padding: 15px 0;
-    position: absolute;
-    bottom: 0;
 }
 
-/* container interno */
+/* CONTAINER INTERNO */
 .footer-inner {
     width: 100%;
     max-width: 1000px;
@@ -96,30 +107,25 @@ footer {
     padding: 0 40px;
 }
 
-/* timer */
+/* TIMERS */
 .countdown {
     display: flex;
     gap: 25px;
 }
 
-/* bloco individual */
 .time-block {
     text-align: center;
 }
 
-/* números */
 .time {
     font-size: 1.8rem;
     font-weight: 600;
     color: #d0d0d0;
-    letter-spacing: 1px;
 }
 
-/* label */
 .label {
     font-size: 0.75rem;
     color: #6e6e6e;
-    margin-top: 3px;
 }
 
 </style>
@@ -127,18 +133,20 @@ footer {
 
 <body>
 
-<div class="search-container">
+<div class="main">
+    <div class="search-container">
 
-<form id="ticketForm">
-<textarea id="ticketIds" required></textarea>
-<button type="submit">Pesquisa</button>
-</form>
+        <form id="ticketForm">
+            <textarea id="ticketIds" required></textarea>
+            <button type="submit">Pesquisa</button>
+        </form>
 
-<form id="crmForm">
-<textarea id="crmTicketIds" required></textarea>
-<button type="submit">CRM</button>
-</form>
+        <form id="crmForm">
+            <textarea id="crmTicketIds" required></textarea>
+            <button type="submit">CRM</button>
+        </form>
 
+    </div>
 </div>
 
 <footer>
@@ -150,93 +158,87 @@ footer {
 
 <script>
 
-// processa entrada
+// INPUT
 function processInput(input) {
-    return input
-        .trim()
-        .split(/[\s,]+/)
-        .map(id => id.trim())
+    return input.trim().split(/[\s,]+/)
         .filter(id => id.length === 7 && !isNaN(id));
 }
 
-// abre chamados
-function searchTickets(ticketIds, urlTemplate) {
-    ticketIds.forEach((ticketId, index) => {
+// OPEN
+function searchTickets(ids, url) {
+    ids.forEach((id, i) => {
         setTimeout(() => {
-            const url = urlTemplate.replace('{ticketId}', ticketId);
-            window.open(url, '_blank');
-        }, index * 300);
+            window.open(url.replace('{ticketId}', id), '_blank');
+        }, i * 300);
     });
 }
 
-// eventos
-document.getElementById("ticketForm").addEventListener("submit", function(e) {
+// EVENTS
+document.getElementById("ticketForm").onsubmit = e => {
     e.preventDefault();
-    const ids = processInput(document.getElementById("ticketIds").value);
-    searchTickets(ids, 'https://support.sevensuite.com.br/TicketDossier/{ticketId}/OpenBySequentialId');
-});
+    searchTickets(
+        processInput(ticketIds.value),
+        'https://support.sevensuite.com.br/TicketDossier/{ticketId}/OpenBySequentialId'
+    );
+};
 
-document.getElementById("crmForm").addEventListener("submit", function(e) {
+document.getElementById("crmForm").onsubmit = e => {
     e.preventDefault();
-    const ids = processInput(document.getElementById("crmTicketIds").value);
-    searchTickets(ids, 'https://grafana-adm.byseven.com.br/d/c0VSoEVV3/notas-adicionais-dos-chamados?var-idNota=0&var-Chamado={ticketId}');
-});
+    searchTickets(
+        processInput(crmTicketIds.value),
+        'https://grafana-adm.byseven.com.br/d/c0VSoEVV3/notas-adicionais-dos-chamados?var-Chamado={ticketId}'
+    );
+};
 
-// contador expediente
-function updateWorkCountdown() {
+// TIMER 18h
+function updateWork() {
     const now = new Date();
     let target = new Date();
-    target.setHours(18, 0, 0, 0);
+    target.setHours(18,0,0,0);
 
-    if (now >= target) {
-        target.setDate(target.getDate() + 1);
-    }
+    if (now >= target) target.setDate(target.getDate()+1);
 
     const diff = target - now;
 
-    const h = Math.floor(diff / 3600000);
-    const m = Math.floor((diff % 3600000) / 60000);
-    const s = Math.floor((diff % 60000) / 1000);
+    const h = Math.floor(diff/3600000);
+    const m = Math.floor((diff%3600000)/60000);
+    const s = Math.floor((diff%60000)/1000);
 
-    document.getElementById("countdownWork").innerHTML =
-        '<div class="time-block"><div class="time">' + h + '</div><div class="label">Horas</div></div>' +
-        '<div class="time-block"><div class="time">' + m + '</div><div class="label">Minutos</div></div>' +
-        '<div class="time-block"><div class="time">' + s + '</div><div class="label">Segundos</div></div>';
+    countdownWork.innerHTML =
+        `<div class="time-block"><div class="time">${h}</div><div class="label">Horas</div></div>
+         <div class="time-block"><div class="time">${m}</div><div class="label">Minutos</div></div>
+         <div class="time-block"><div class="time">${s}</div><div class="label">Segundos</div></div>`;
 }
 
-// contador anual
-function updateCustomCountdown() {
+// TIMER ANUAL
+function updateMeta() {
     const now = new Date();
-
     let year = now.getFullYear();
-    let target = new Date(year, 1, 2, 8, 0, 0);
+    let target = new Date(year,1,2,8,0,0);
 
-    if (now > target) {
-        target = new Date(year + 1, 1, 2, 8, 0, 0);
-    }
+    if (now > target) target = new Date(year+1,1,2,8,0,0);
 
     const diff = target - now;
 
-    const d = Math.floor(diff / 86400000);
-    const h = Math.floor((diff % 86400000) / 3600000);
-    const m = Math.floor((diff % 3600000) / 60000);
-    const s = Math.floor((diff % 60000) / 1000);
+    const d = Math.floor(diff/86400000);
+    const h = Math.floor((diff%86400000)/3600000);
+    const m = Math.floor((diff%3600000)/60000);
+    const s = Math.floor((diff%60000)/1000);
 
-    document.getElementById("countdownCustom").innerHTML =
-        '<div class="time-block"><div class="time">' + d + '</div><div class="label">Dias</div></div>' +
-        '<div class="time-block"><div class="time">' + h + '</div><div class="label">Horas</div></div>' +
-        '<div class="time-block"><div class="time">' + m + '</div><div class="label">Minutos</div></div>' +
-        '<div class="time-block"><div class="time">' + s + '</div><div class="label">Segundos</div></div>';
+    countdownCustom.innerHTML =
+        `<div class="time-block"><div class="time">${d}</div><div class="label">Dias</div></div>
+         <div class="time-block"><div class="time">${h}</div><div class="label">Horas</div></div>
+         <div class="time-block"><div class="time">${m}</div><div class="label">Minutos</div></div>
+         <div class="time-block"><div class="time">${s}</div><div class="label">Segundos</div></div>`;
 }
 
-// loop
 setInterval(() => {
-    updateWorkCountdown();
-    updateCustomCountdown();
+    updateWork();
+    updateMeta();
 }, 1000);
 
-updateWorkCountdown();
-updateCustomCountdown();
+updateWork();
+updateMeta();
 
 </script>
 
