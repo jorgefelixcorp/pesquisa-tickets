@@ -6,6 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>✠Pesquisa✠</title>
 
+<!-- Fonte -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
 <style>
 body {
     background-color: #121212;
@@ -16,7 +19,7 @@ body {
     justify-content: center;
     height: 100vh;
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', sans-serif;
     padding: 10px;
 }
 
@@ -68,24 +71,42 @@ button:hover {
     background-color: #333333;
 }
 
+/* FOOTER */
 footer {
     width: 100%;
     background-color: #000000;
-    color: #ffffff;
     display: flex;
-    padding: 10px 20px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
     position: absolute;
     bottom: 0;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
 }
 
+/* BLOCO DO TIMER */
 .countdown {
-    font-size: 1.3rem;
-    padding: 10px;
-    background-color: #000000;
-    border-radius: 5px;
+    display: flex;
+    gap: 25px;
+}
+
+/* CADA UNIDADE (ex: Dias, Horas...) */
+.time-block {
+    text-align: center;
+}
+
+/* NÚMEROS */
+.time {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #d0d0d0;
+    letter-spacing: 1px;
+}
+
+/* LABEL */
+.label {
+    font-size: 0.75rem;
+    color: #6e6e6e;
+    margin-top: 3px;
 }
 </style>
 </head>
@@ -122,7 +143,7 @@ function processInput(input) {
         .filter(id => id.length === 7 && !isNaN(id));
 }
 
-// Abre chamados com leve delay (evita bloqueio)
+// Abre chamados com delay
 function searchTickets(ticketIds, urlTemplate) {
     ticketIds.forEach((ticketId, index) => {
         setTimeout(() => {
@@ -145,7 +166,7 @@ document.getElementById("crmForm").addEventListener("submit", function(e) {
     searchTickets(ids, 'https://grafana-adm.byseven.com.br/d/c0VSoEVV3/notas-adicionais-dos-chamados?var-idNota=0&var-Chamado={ticketId}');
 });
 
-// Contador até 18h
+// TIMER EXPEDIENTE (18h)
 function updateWorkCountdown() {
     const now = new Date();
     let target = new Date();
@@ -161,11 +182,23 @@ function updateWorkCountdown() {
     const m = Math.floor((diff % 3600000) / 60000);
     const s = Math.floor((diff % 60000) / 1000);
 
-    document.getElementById("countdownWork").textContent =
-        `Expediente: ${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    document.getElementById("countdownWork").innerHTML = `
+        <div class="time-block">
+            <div class="time">${h}</div>
+            <div class="label">Horas</div>
+        </div>
+        <div class="time-block">
+            <div class="time">${m}</div>
+            <div class="label">Minutos</div>
+        </div>
+        <div class="time-block">
+            <div class="time">${s}</div>
+            <div class="label">Segundos</div>
+        </div>
+    `;
 }
 
-// Contador anual (02/02 08h)
+// TIMER ANUAL (02/02 08h)
 function updateCustomCountdown() {
     const now = new Date();
 
@@ -183,8 +216,24 @@ function updateCustomCountdown() {
     const m = Math.floor((diff % 3600000) / 60000);
     const s = Math.floor((diff % 60000) / 1000);
 
-    document.getElementById("countdownCustom").textContent =
-        `Meta: ${d}d ${h}h ${m}m ${s}s`;
+    document.getElementById("countdownCustom").innerHTML = `
+        <div class="time-block">
+            <div class="time">${d}</div>
+            <div class="label">Dias</div>
+        </div>
+        <div class="time-block">
+            <div class="time">${h}</div>
+            <div class="label">Horas</div>
+        </div>
+        <div class="time-block">
+            <div class="time">${m}</div>
+            <div class="label">Minutos</div>
+        </div>
+        <div class="time-block">
+            <div class="time">${s}</div>
+            <div class="label">Segundos</div>
+        </div>
+    `;
 }
 
 // Atualização contínua
