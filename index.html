@@ -165,11 +165,14 @@ function processInput(input) {
 }
 
 // OPEN
-function searchTickets(ids, url) {
-    ids.forEach((id, i) => {
-        setTimeout(() => {
-            window.open(url.replace('{ticketId}', id), '_blank');
-        }, i * 300);
+function searchTickets(ticketIds, urlTemplate) {
+    ticketIds.forEach((ticketId) => {
+        const id = ticketId.trim();
+
+        if (id.length === 7 && !isNaN(id)) {
+            const url = urlTemplate.replace('{ticketId}', id);
+            window.open(url, '_blank');
+        }
     });
 }
 
