@@ -506,13 +506,12 @@
 
     /*
     =========================
-    TESTE TEMPORÁRIO
-    ALMOÇO: 10:00 → 11:30
+    ALMOÇO: 12:00 → 13:30
     =========================
     */
 
-    const lunchStart = 10 * 60;       // 10:00
-    const lunchEnd = (11 * 60) + 30; // 11:30
+    const lunchStart = 12 * 60;       // 12:00
+    const lunchEnd = (13 * 60) + 30; // 13:30
 
     let target = new Date();
 
@@ -527,7 +526,7 @@
         currentTimeInMinutes < lunchEnd
     ) {
 
-        target.setHours(11, 30, 0, 0);
+        target.setHours(13, 30, 0, 0);
 
         const diff = target - now;
 
@@ -556,7 +555,7 @@
 
     if (currentTimeInMinutes < lunchStart) {
 
-        target.setHours(10, 0, 0, 0);
+        target.setHours(12, 0, 0, 0);
 
     }
 
