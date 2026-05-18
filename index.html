@@ -516,6 +516,31 @@
 
     /*
     =========================
+    APÓS 18H
+    =========================
+    */
+
+    const endOfWork =
+        (CONFIG.workTimer.hour * 60) +
+        CONFIG.workTimer.minute;
+
+    if (currentTimeInMinutes >= endOfWork) {
+
+        elements.countdownWork.innerHTML = `
+
+            <div class="time-block">
+                <div class="time">🏠</div>
+                <div class="label">Time to Go Home</div>
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    /*
+    =========================
     DURANTE O ALMOÇO
     =========================
     */
@@ -537,7 +562,7 @@
         elements.countdownWork.innerHTML += `
 
             <div class="time-block">
-                <div class="label">Lunch Time</div>
+                <div class="label">🍗 Lunch Time</div>
             </div>
 
         `;
@@ -556,6 +581,23 @@
 
         target.setHours(12, 0, 0, 0);
 
+        const diff = target - now;
+
+        renderCountdown(
+            elements.countdownWork,
+            formatCountdown(diff)
+        );
+
+        elements.countdownWork.innerHTML += `
+
+            <div class="time-block">
+                <div class="label">⏰ To Lunch</div>
+            </div>
+
+        `;
+
+        return;
+
     }
 
     /*
@@ -564,20 +606,12 @@
     =========================
     */
 
-    else {
-
-        target.setHours(
-            CONFIG.workTimer.hour,
-            CONFIG.workTimer.minute,
-            0,
-            0
-        );
-
-        if (now >= target) {
-            target.setDate(target.getDate() + 1);
-        }
-
-    }
+    target.setHours(
+        CONFIG.workTimer.hour,
+        CONFIG.workTimer.minute,
+        0,
+        0
+    );
 
     const diff = target - now;
 
@@ -585,6 +619,14 @@
         elements.countdownWork,
         formatCountdown(diff)
     );
+
+    elements.countdownWork.innerHTML += `
+
+        <div class="time-block">
+            <div class="label">⏰ To Home</div>
+        </div>
+
+    `;
 
 }
 
