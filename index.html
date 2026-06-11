@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+
+<!-- =========================
+     PESQUISA DE CHAMADOS BY7
+========================== -->
+
 <html lang="pt-br">
 
 <head>
@@ -14,7 +19,7 @@
          TITLE / ICON
     ========================== -->
 
-    <title>🔎Pesquisar chamados</title>
+    <title>🔍Pesquisar chamados</title>
 
     <link rel="icon" type="image/png" href="Images/magnifying-glass.png">
     <link rel="shortcut icon" href="Images/magnifying-glass.png">
@@ -162,7 +167,7 @@
             color: #8a8a8a;
         }
 
-        /* =========================
+         /* =========================
            7. BUTTONS
         ========================== */
 
@@ -188,9 +193,28 @@
         }
 
         button:hover {
+
             background-color: var(--button-hover);
+
         }
 
+        .button-group {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 15px;
+
+            width: 100%;
+
+        }
+
+        .button-group button {
+
+            width: 150px;
+
+        }
         /* =========================
            8. FOOTER
         ========================== */
@@ -308,20 +332,32 @@
             </form>
 
             <!-- =========================
-                 CRM FORM
+                 ZABBIX FORM
             ========================== -->
 
-            <form id="crmForm">
+            <form id="zabbixForm">
 
                 <textarea
-                    id="crmTicketIds"
-                    placeholder="Cole os chamados CRM..."
+                    id="zabbixHost"
+                    placeholder="Cole o nome do host do Zabbix By7 V4 ou V7..."
                     required>
                 </textarea>
 
-                <button type="submit">
-                    CRM
-                </button>
+                <div class="button-group">
+
+                    <button
+                        type="button"
+                        id="zabbixV4Btn">
+                        Zabbix V4
+                    </button>
+
+                    <button
+                        type="button"
+                        id="zabbixV7Btn">
+                        Zabbix V7
+                    </button>
+
+                </div>
 
             </form>
 
@@ -350,7 +386,6 @@
         </div>
 
     </footer>
-
     <!-- =========================
          SCRIPT
     ========================== -->
@@ -386,10 +421,15 @@
         const elements = {
 
             ticketForm: document.getElementById("ticketForm"),
-            crmForm: document.getElementById("crmForm"),
+
+            zabbixForm: document.getElementById("zabbixForm"),
 
             ticketIds: document.getElementById("ticketIds"),
-            crmTicketIds: document.getElementById("crmTicketIds"),
+
+            zabbixHost: document.getElementById("zabbixHost"),
+
+            zabbixV4Btn: document.getElementById("zabbixV4Btn"),
+            zabbixV7Btn: document.getElementById("zabbixV7Btn"),
 
             countdownWork: document.getElementById("countdownWork"),
             countdownCustom: document.getElementById("countdownCustom")
@@ -693,15 +733,33 @@
 
         });
 
-        elements.crmForm.addEventListener("submit", e => {
+        elements.zabbixV4Btn.addEventListener("click", () => {
 
-            e.preventDefault();
+            const host = elements.zabbixHost.value.trim();
 
-            openTickets(
+            if (!host) return;
 
-                processInput(elements.crmTicketIds.value),
+            window.open(
 
-                'https://grafana-adm.byseven.com.br/d/c0VSoEVV3/notas-adicionais-dos-chamados?var-Chamado={ticketId}'
+                `https://zabbix.byseven.com.br/zabbix.php?action=search&search=${encodeURIComponent(host)}`,
+
+                '_blank'
+
+            );
+
+        });
+
+        elements.zabbixV7Btn.addEventListener("click", () => {
+
+            const host = elements.zabbixHost.value.trim();
+
+            if (!host) return;
+
+            window.open(
+
+                `https://monitoramento.byseven.com.br/zabbix.php?action=search&search=${encodeURIComponent(host)}`,
+
+                '_blank'
 
             );
 
