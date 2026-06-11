@@ -55,17 +55,17 @@
 
         :root {
 
-            --bg-primary: #121212;
-            --bg-secondary: #1e1e1e;
-            --bg-footer: #000000;
+            --bg-primary: #102038;
+            --bg-secondary: #1a2b45;
+            --bg-footer: #0b1628;
 
             --text-primary: #ffffff;
-            --text-secondary: #d0d0d0;
-            --text-muted: #6e6e6e;
+            --text-secondary: #d7dce5;
+            --text-muted: #7f8ea8;
 
-            --border-color: #ffffff;
+            --border-color: rgba(255,255,255,0.75);
 
-            --button-hover: #333333;
+            --button-hover: #ff5a36;
 
             --font-main: 'Inter', sans-serif;
 
@@ -79,17 +79,45 @@
 
         body {
 
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
+        background-color: var(--bg-primary);
 
-            font-family: var(--font-main);
+        color: var(--text-primary);
 
-            display: flex;
-            flex-direction: column;
+        font-family: var(--font-main);
 
-            min-height: 100vh;
+        display: flex;
+        flex-direction: column;
 
-        }
+        min-height: 100vh;
+
+        position: relative;
+
+        } 
+        body::before {
+
+            content: "";
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background-image: url("Images/backgroundby7.png");
+            background-repeat: no-repeat;
+            background-position: center center;
+
+            background-size: 100%;
+
+            opacity: 1;
+
+            pointer-events: none;
+
+            z-index: -1;
+
+        } 
 
         /* =========================
            4. LAYOUT
@@ -151,7 +179,7 @@
             border-radius: var(--radius);
             border: 2px solid var(--border-color);
 
-            background-color: var(--bg-secondary);
+            background-color: rgba(55, 70, 90, 0.85);
             color: var(--text-primary);
 
             font-size: 1.05rem;
@@ -180,7 +208,7 @@
             border: none;
             border-radius: var(--radius);
 
-            background-color: var(--bg-footer);
+            background-color: #2f2f2f;
             color: var(--text-primary);
 
             font-size: 1rem;
@@ -189,12 +217,25 @@
             cursor: pointer;
 
             transition: background-color 0.2s ease;
+            box-shadow:
+                inset 0 1px 1px rgba(255,255,255,0.08),
+                inset 0 -2px 3px rgba(0,0,0,0.35),
+                0 2px 4px rgba(0,0,0,0.25);
 
         }
 
         button:hover {
 
-            background-color: var(--button-hover);
+            background-color: #ff5a36;
+
+            color: #121212;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                inset 0 1px 1px rgba(255,255,255,0.20),
+                0 4px 10px rgba(0,0,0,0.35),
+                0 0 12px rgba(255,90,54,0.25);
 
         }
 
@@ -456,8 +497,9 @@
 
                 input
                     .split(/\r?\n/)
-                    .map(host => host.trim())
-                    .filter(host => host.length > 0)
+                    .map(line => line.trim())
+                    .filter(line => line.length > 0)
+                    .map(line => line.split(/\s+/)[0])
 
             )];
 
