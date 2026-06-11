@@ -322,8 +322,7 @@
                 <textarea
                     id="ticketIds"
                     placeholder="Cole os chamados aqui..."
-                    required>
-                </textarea>
+                    required></textarea>
 
                 <button type="submit">
                     Pesquisa
@@ -340,8 +339,7 @@
                 <textarea
                     id="zabbixHost"
                     placeholder="Cole o nome do host do Zabbix By7 V4 ou V7..."
-                    required>
-                </textarea>
+                    required></textarea>
 
                 <div class="button-group">
 
@@ -452,6 +450,18 @@
             )];
 
         }
+        function processHosts(input) {
+
+            return [...new Set(
+
+                input
+                    .split(/\r?\n/)
+                    .map(host => host.trim())
+                    .filter(host => host.length > 0)
+
+            )];
+
+        }
 
         function formatCountdown(diff) {
 
@@ -518,16 +528,29 @@
 
         function openTickets(ids, urlTemplate) {
 
-    ids.forEach(id => {
+            ids.forEach(id => {
 
-        window.open(
-            urlTemplate.replace('{ticketId}', id),
-            '_blank'
-        );
+                window.open(
+                    urlTemplate.replace('{ticketId}', id),
+                    '_blank'
+                );
 
-    });
+            });
 
-}
+        }
+
+        function openHosts(hosts, urlTemplate) {
+
+            hosts.forEach(host => {
+
+                window.open(
+                    urlTemplate.replace('{host}', encodeURIComponent(host)),
+                    '_blank'
+                );
+
+            });
+
+        }
 
         /* =========================
            5. TIMERS
@@ -735,15 +758,11 @@
 
         elements.zabbixV4Btn.addEventListener("click", () => {
 
-            const host = elements.zabbixHost.value.trim();
+            openHosts(
 
-            if (!host) return;
+                processHosts(elements.zabbixHost.value),
 
-            window.open(
-
-                `https://zabbix.byseven.com.br/zabbix.php?action=search&search=${encodeURIComponent(host)}`,
-
-                '_blank'
+                'https://zabbix.byseven.com.br/zabbix.php?action=search&search={host}'
 
             );
 
@@ -751,15 +770,11 @@
 
         elements.zabbixV7Btn.addEventListener("click", () => {
 
-            const host = elements.zabbixHost.value.trim();
+            openHosts(
 
-            if (!host) return;
+                processHosts(elements.zabbixHost.value),
 
-            window.open(
-
-                `https://monitoramento.byseven.com.br/zabbix.php?action=search&search=${encodeURIComponent(host)}`,
-
-                '_blank'
+                'https://monitoramento.byseven.com.br/zabbix.php?action=search&search={host}'
 
             );
 
