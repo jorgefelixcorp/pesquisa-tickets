@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+
+<!-- =========================
+     PESQUISA DE CHAMADOS BY7
+========================== -->
+
+<html lang="pt-br">
+
+<head>
+
+    <!-- =========================
+         META
+    ========================== -->
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- =========================
+         TITLE / ICON
+    ========================== -->
+
+    <title>🔍Pesquisar chamados</title>
+
+    <link rel="icon" type="image/png" href="Images/magnifying-glass.png">
+    <link rel="shortcut icon" href="Images/magnifying-glass.png">
+    <!-- =========================
+         FONTS
+    ========================== -->
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- =========================
+         STYLE
+    ========================== -->
+
+    <style>
+
+        /* =========================
+           1. RESET
+        ========================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+        }
+
+        /* =========================
+           2. ROOT / VARIABLES
+        ========================== */
+
+        :root {
+
+            --bg-primary: #102038;
+            --bg-secondary: #1a2b45;
+            --bg-footer: #0b1628;
+
+            --text-primary: #ffffff;
+            --text-secondary: #d7dce5;
+            --text-muted: #7f8ea8;
+
+            --border-color: rgba(255,255,255,0.75);
+
+            --button-hover: #ff5a36;
+
+            --font-main: 'Inter', sans-serif;
+
+            --radius: 6px;
+
+        }
+
+        /* =========================
+           3. GLOBAL
+        ========================== */
+
+        body {
+
+        background-color: var(--bg-primary);
+
+        color: var(--text-primary);
+
+        font-family: var(--font-main);
+
+        display: flex;
+        flex-direction: column;
+
+        min-height: 100vh;
+
+        position: relative;
+
+        } 
+        body::before {
+
+            content: "";
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background-image: url("Images/backgroundby7.png");
+            background-repeat: no-repeat;
+            background-position: center center;
+
+            background-size: 100%;
+
+            opacity: 1;
+
+            pointer-events: none;
+
+            z-index: -1;
+
+        } 
+
+        /* =========================
+           4. LAYOUT
+        ========================== */
+
+        .main {
+
+            flex: 1;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            width: 100%;
+
+            padding: 20px;
+
+        }
+
+        .search-container {
+
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+
+            width: 100%;
+            max-width: 1100px;
+
+        }
+
+        /* =========================
+           5. FORMS
+        ========================== */
+
+        form {
+
+            width: 100%;
+            max-width: 450px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+        }
+
+        /* =========================
+           6. INPUTS
+        ========================== */
+
+        textarea {
+
+            width: 100%;
+            height: 250px;
+
+            padding: 15px;
+
+            resize: none;
+
+            border-radius: var(--radius);
+            border: 2px solid var(--border-color);
+
+            background-color: rgba(55, 70, 90, 0.85);
+            color: var(--text-primary);
+
+            font-size: 1.05rem;
+            font-family: var(--font-main);
+
+            text-align: center;
+
+            margin-bottom: 20px;
+
+        }
+
+        textarea::placeholder {
+            color: #8a8a8a;
+        }
+
+         /* =========================
+           7. BUTTONS
+        ========================== */
+
+        button {
+
+            width: 200px;
+
+            padding: 12px 25px;
+
+            border: none;
+            border-radius: var(--radius);
+
+            background-color: #2f2f2f;
+            color: var(--text-primary);
+
+            font-size: 1rem;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: background-color 0.2s ease;
+            box-shadow:
+                inset 0 1px 1px rgba(255,255,255,0.08),
+                inset 0 -2px 3px rgba(0,0,0,0.35),
+                0 2px 4px rgba(0,0,0,0.25);
+
+        }
+
+        button:hover {
+
+            background-color: #ff5a36;
+
+            color: #121212;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                inset 0 1px 1px rgba(255,255,255,0.20),
+                0 4px 10px rgba(0,0,0,0.35),
+                0 0 12px rgba(255,90,54,0.25);
+
+        }
+
+        .button-group {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 15px;
+
+            width: 100%;
+
+        }
+
+        .button-group button {
+
+            width: 150px;
+
+        }
+        /* =========================
+           8. FOOTER
+        ========================== */
+
+        footer {
+
+            width: 100%;
+
+            background-color: var(--bg-footer);
+
+            display: flex;
+            justify-content: center;
+
+            padding: 15px 0;
+
+        }
+
+        .footer-inner {
+
+            width: 100%;
+            max-width: 1100px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 0 40px;
+
+        }
+
+        /* =========================
+           9. TIMERS
+        ========================== */
+
+        .countdown {
+
+            display: flex;
+            gap: 20px;
+
+        }
+
+        .time-block {
+            text-align: center;
+        }
+
+        .time {
+
+            font-size: 1.7rem;
+            font-weight: 600;
+
+            color: var(--text-secondary);
+
+        }
+
+        .label {
+
+            font-size: 0.75rem;
+
+            color: var(--text-muted);
+
+        }
+
+        /* =========================
+           10. RESPONSIVE
+        ========================== */
+
+        @media (max-width: 900px) {
+
+            .search-container {
+
+                flex-direction: column;
+                align-items: center;
+
+            }
+
+            .footer-inner {
+
+                flex-direction: column;
+                gap: 25px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="main">
+
+        <div class="search-container">
+
+            <!-- =========================
+                 TICKET FORM
+            ========================== -->
+
+            <form id="ticketForm">
+
+                <textarea
+                    id="ticketIds"
+                    placeholder="Cole os chamados aqui..."
+                    required></textarea>
+
+                <button type="submit">
+                    Pesquisa
+                </button>
+
+            </form>
+
+            <!-- =========================
+                 ZABBIX FORM
+            ========================== -->
+
+            <form id="zabbixForm">
+
+                <textarea
+                    id="zabbixHost"
+                    placeholder="Cole o nome do host do Zabbix By7 V4 ou V7..."
+                    required></textarea>
+
+                <div class="button-group">
+
+                    <button
+                        type="button"
+                        id="zabbixV4Btn">
+                        Zabbix V4
+                    </button>
+
+                    <button
+                        type="button"
+                        id="zabbixV7Btn">
+                        Zabbix V7
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <div class="footer-inner">
+
+            <div
+                class="countdown"
+                id="countdownWork">
+            </div>
+
+            <div
+                class="countdown"
+                id="countdownCustom">
+            </div>
+
+        </div>
+
+    </footer>
+    <!-- =========================
+         SCRIPT
+    ========================== -->
+
+    <script>
+
+        /* =========================
+           1. CONFIG
+        ========================== */
+
+        const CONFIG = {
+
+            workTimer: {
+                hour: 18,
+                minute: 0
+            },
+
+            customTimer: {
+                month: 2,
+                day: 2,
+                hour: 8,
+                minute: 0
+            },
+
+            openDelay: 300
+
+        };
+
+        /* =========================
+           2. ELEMENTS
+        ========================== */
+
+        const elements = {
+
+            ticketForm: document.getElementById("ticketForm"),
+
+            zabbixForm: document.getElementById("zabbixForm"),
+
+            ticketIds: document.getElementById("ticketIds"),
+
+            zabbixHost: document.getElementById("zabbixHost"),
+
+            zabbixV4Btn: document.getElementById("zabbixV4Btn"),
+            zabbixV7Btn: document.getElementById("zabbixV7Btn"),
+
+            countdownWork: document.getElementById("countdownWork"),
+            countdownCustom: document.getElementById("countdownCustom")
+
+        };
+
+        /* =========================
+           3. UTILS
+        ========================== */
+
+        function processInput(input) {
+
+            return [...new Set(
+
+                input
+                    .trim()
+                    .split(/[\s,]+/)
+                    .filter(id => /^\d{7}$/.test(id))
+
+            )];
+
+        }
+        function processHosts(input) {
+
+            return [...new Set(
+
+                input
+                    .split(/\r?\n/)
+                    .map(line => line.trim())
+                    .filter(line => line.length > 0)
+                    .map(line => line.split(/\s+/)[0])
+
+            )];
+
+        }
+
+        function formatCountdown(diff) {
+
+            const days = Math.floor(diff / 86400000);
+
+            const hours = Math.floor(
+                (diff % 86400000) / 3600000
+            );
+
+            const minutes = Math.floor(
+                (diff % 3600000) / 60000
+            );
+
+            const seconds = Math.floor(
+                (diff % 60000) / 1000
+            );
+
+            return {
+                days,
+                hours,
+                minutes,
+                seconds
+            };
+
+        }
+
+        function renderCountdown(element, values, showDays = false) {
+
+            element.innerHTML = "";
+
+            if (showDays) {
+
+                element.innerHTML += `
+                    <div class="time-block">
+                        <div class="time">${values.days}</div>
+                        <div class="label">Dias</div>
+                    </div>
+                `;
+
+            }
+
+            element.innerHTML += `
+                <div class="time-block">
+                    <div class="time">${values.hours}</div>
+                    <div class="label">Horas</div>
+                </div>
+
+                <div class="time-block">
+                    <div class="time">${values.minutes}</div>
+                    <div class="label">Minutos</div>
+                </div>
+
+                <div class="time-block">
+                    <div class="time">${values.seconds}</div>
+                    <div class="label">Segundos</div>
+                </div>
+            `;
+
+        }
+
+        /* =========================
+           4. SEARCH
+        ========================== */
+
+        function openTickets(ids, urlTemplate) {
+
+            ids.forEach(id => {
+
+                window.open(
+                    urlTemplate.replace('{ticketId}', id),
+                    '_blank'
+                );
+
+            });
+
+        }
+
+        function openHosts(hosts, urlTemplate) {
+
+            hosts.forEach(host => {
+
+                window.open(
+                    urlTemplate.replace('{host}', encodeURIComponent(host)),
+                    '_blank'
+                );
+
+            });
+
+        }
+
+        /* =========================
+           5. TIMERS
+        ========================== */
+
+        function updateWorkTimer() {
+
+    const now = new Date();
+
+    const currentHours = now.getHours();
+    const currentMinutes = now.getMinutes();
+
+    const currentTimeInMinutes =
+        (currentHours * 60) + currentMinutes;
+
+    /*
+    =========================
+    ALMOÇO: 12:00 → 13:30
+    =========================
+    */
+
+    const lunchStart = 12 * 60;       // 12:00
+    const lunchEnd = (13 * 60) + 30; // 13:30
+
+    let target = new Date();
+
+    /*
+    =========================
+    APÓS 18H
+    =========================
+    */
+
+    const endOfWork =
+        (CONFIG.workTimer.hour * 60) +
+        CONFIG.workTimer.minute;
+
+    if (currentTimeInMinutes >= endOfWork) {
+
+        elements.countdownWork.innerHTML = `
+
+            <div class="time-block">
+                <div class="time">🏠</div>
+                <div class="label">Time to Go Home</div>
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    /*
+    =========================
+    DURANTE O ALMOÇO
+    =========================
+    */
+
+    if (
+        currentTimeInMinutes >= lunchStart &&
+        currentTimeInMinutes < lunchEnd
+    ) {
+
+        target.setHours(13, 30, 0, 0);
+
+        const diff = target - now;
+
+        renderCountdown(
+            elements.countdownWork,
+            formatCountdown(diff)
+        );
+
+        elements.countdownWork.innerHTML += `
+
+            <div class="time-block">
+                <div class="label">🍗 Lunch Time</div>
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    /*
+    =========================
+    ANTES DO ALMOÇO
+    =========================
+    */
+
+    if (currentTimeInMinutes < lunchStart) {
+
+        target.setHours(12, 0, 0, 0);
+
+        const diff = target - now;
+
+        renderCountdown(
+            elements.countdownWork,
+            formatCountdown(diff)
+        );
+
+        elements.countdownWork.innerHTML += `
+
+            <div class="time-block">
+                <div class="label">⏰ To Lunch</div>
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    /*
+    =========================
+    APÓS O ALMOÇO
+    =========================
+    */
+
+    target.setHours(
+        CONFIG.workTimer.hour,
+        CONFIG.workTimer.minute,
+        0,
+        0
+    );
+
+    const diff = target - now;
+
+    renderCountdown(
+        elements.countdownWork,
+        formatCountdown(diff)
+    );
+
+    elements.countdownWork.innerHTML += `
+
+        <div class="time-block">
+            <div class="label">⏰ To Home</div>
+        </div>
+
+    `;
+
+}
+
+        function updateCustomTimer() {
+
+            const now = new Date();
+
+            let year = now.getFullYear();
+
+            let target = new Date(
+                year,
+                CONFIG.customTimer.month,
+                CONFIG.customTimer.day,
+                CONFIG.customTimer.hour,
+                CONFIG.customTimer.minute,
+                0
+            );
+
+            if (now > target) {
+
+                target = new Date(
+                    year + 1,
+                    CONFIG.customTimer.month,
+                    CONFIG.customTimer.day,
+                    CONFIG.customTimer.hour,
+                    CONFIG.customTimer.minute,
+                    0
+                );
+
+            }
+
+            const diff = target - now;
+
+            renderCountdown(
+                elements.countdownCustom,
+                formatCountdown(diff),
+                true
+            );
+
+        }
+
+        function updateAllTimers() {
+
+            updateWorkTimer();
+            updateCustomTimer();
+
+        }
+
+        /* =========================
+           6. EVENTS
+        ========================== */
+
+        elements.ticketForm.addEventListener("submit", e => {
+
+            e.preventDefault();
+
+            openTickets(
+
+                processInput(elements.ticketIds.value),
+
+                'https://support.sevensuite.com.br/TicketDossier/{ticketId}/OpenBySequentialId'
+
+            );
+
+        });
+
+        elements.zabbixV4Btn.addEventListener("click", () => {
+
+            openHosts(
+
+                processHosts(elements.zabbixHost.value),
+
+                'https://zabbix.byseven.com.br/zabbix.php?action=search&search={host}'
+
+            );
+
+        });
+
+        elements.zabbixV7Btn.addEventListener("click", () => {
+
+            openHosts(
+
+                processHosts(elements.zabbixHost.value),
+
+                'https://monitoramento.byseven.com.br/zabbix.php?action=search&search={host}'
+
+            );
+
+        });
+
+        /* =========================
+           7. INIT
+        ========================== */
+
+        updateAllTimers();
+
+        setInterval(updateAllTimers, 1000);
+
+    </script>
+
+</body>
+
+</html>
